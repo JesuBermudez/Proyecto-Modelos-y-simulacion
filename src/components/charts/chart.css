@@ -1,0 +1,101 @@
+.chart {
+  & h2 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.35);
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  & h3 {
+    font-size: 2.25rem;
+    margin: 0 20px 0 0;
+    font-weight: 400;
+  }
+
+  .chart__time {
+    font-size: 0.85rem;
+  }
+}
+
+.chart-flex {
+  display: flex;
+  align-items: center;
+
+  & p {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .chart-changeValue {
+    margin-left: 10px;
+  }
+}
+
+.chart-flex__box {
+  display: flex;
+  padding: 3px 10px 3px 3px;
+  border-radius: 8px;
+  align-items: center;
+
+  .box__icon {
+    font-size: 25px;
+    padding-bottom: 2px;
+  }
+}
+
+.chart-container {
+  width: 100%;
+  padding: 10px 0;
+  position: relative;
+}
+
+.prediction-container {
+  display: flex;
+  gap: 7px;
+
+  & input {
+    border: none;
+    padding: 0.4rem;
+    border-radius: 0.4rem;
+    background: rgba(232, 232, 232, 0.6);
+    box-shadow: 7px 7px 15px #dbdbdb, -7px -7px 15px #ffffff;
+    transition: 0.3s;
+  }
+
+  & input:focus {
+    outline-color: #e8e8e8;
+    background: #e8e8e8;
+    box-shadow: inset 7px 7px 20px #c5c5c5, inset -7px -7px 20px #ffffff;
+    transition: 0.3s;
+  }
+
+  & button {
+    background-color: initial;
+    background-image: linear-gradient(#464d55, #25292e);
+    border-radius: 8px;
+    border-width: 0;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    margin: 0;
+    outline: none;
+    padding: 0 20px;
+    text-align: center;
+    transform: translate3d(0, 0, 0);
+    transition: all 150ms;
+  }
+
+  & button:hover {
+    box-shadow: rgba(0, 1, 0, 0.2) 0 2px 8px;
+    opacity: 0.85;
+  }
+
+  & button:active {
+    outline: 0;
+  }
+
+  & button:focus {
+    box-shadow: rgba(0, 0, 0, 0.5) 0 0 0 3px;
+  }
+}
