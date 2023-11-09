@@ -31,6 +31,16 @@
   }
 }
 
+.chart-grid { 
+  width: fit-content;
+  display: grid;
+  line-height: 1;
+  font-weight: 600;
+  margin-bottom: 10px;
+  grid-template-columns: 16px auto 16px auto;
+  gap: 6px;
+}
+
 .chart-flex__box {
   display: flex;
   padding: 3px 10px 3px 3px;

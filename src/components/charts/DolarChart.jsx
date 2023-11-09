@@ -104,6 +104,7 @@ export default function DolarChart() {
     }
 
     const handleDataReceived = (dataReceived) => {
+      console.log(dataReceived);
       let date = new Date(dataReceived.time);
 
       let localDate = new Date(
@@ -115,6 +116,7 @@ export default function DolarChart() {
       setData((prevData) => {
         if (
           prevData.length > 0 &&
+          dataReceived.value &&
           prevData[prevData.length - 1].value != dataReceived.value
         ) {
           series.current.update(dataReceived);
@@ -169,7 +171,6 @@ export default function DolarChart() {
         .then((response) => {
           const container =
             document.getElementsByClassName("chart-container")[0];
-          console.log(container);
 
           const toolTipWidth = 110;
           const toolTipHeight = 95;
@@ -186,7 +187,7 @@ export default function DolarChart() {
               setToolTip((prevState) => ({ ...prevState, display: "none" }));
             } else {
               const date = new Date(param.time * 1000);
-              const dateStr = `${date.getDate() + 1} ${date.toLocaleString(
+              const dateStr = `${date.getUTCDate()} ${date.toLocaleString(
                 "default",
                 {
                   month: "short",
@@ -195,12 +196,7 @@ export default function DolarChart() {
               const data = param.seriesData.get(predictionSeries.current);
               const price = data.value !== undefined ? data.value : data.close;
               const content = `<div>Predicción</div>
-                <div style="font-size: 24px; margin: 4px 0px;">
-			        ${price}
-			    </div>
-                <div>
-			        ${dateStr}
-			    </div>`;
+                <div style="font-size: 24px; margin: 4px 0px;">${price}</div><div>${dateStr}</div>`;
 
               const coordinate =
                 predictionSeries.current.priceToCoordinate(price);
