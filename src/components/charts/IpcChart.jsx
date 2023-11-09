@@ -65,6 +65,9 @@ export default function IpcChart() {
                   top: 0.38,
                 },
               },
+              localization: {
+                priceFormatter: (p) => p.toFixed(1) + "%",
+              },
               grid: {
                 vertLines: {
                   visible: false,
@@ -107,7 +110,7 @@ export default function IpcChart() {
             param.seriesData.get(seriesI.current) == undefined)
         ) {
           const additionalDataForTimestamp =
-            additionalData[additionalData.length - 1];
+            additionalData[dataI[dataI.length - 1].time];
 
           const timestamp = Number(dataI[dataI.length - 1].time) * 1000;
           const date = new Date(timestamp);
@@ -119,8 +122,8 @@ export default function IpcChart() {
             }
           )}, ${date.getFullYear()}`;
           setToolTip(
-            `<div style="font-size: 22px; margin: 4px 0px; color: #20262E"> Indice: ${additionalDataForTimestamp.indice}</div>` +
-              `<div style="font-size: 18px; margin: 4px 0px; color: #20262E; line-height: 0.85;">Inflación<br/>mensual: ${additionalDataForTimestamp.monthly_inflation}</div>` +
+            `<div style="font-size: 22px; margin: 4px 0px; color: #20262E"> Indice: ${additionalDataForTimestamp.indice}%</div>` +
+              `<div style="font-size: 18px; margin: 4px 0px; color: #20262E; line-height: 0.85;">Inflación<br/>mensual: ${additionalDataForTimestamp.monthly_inflation}%</div>` +
               "<div>" +
               dateStr +
               "</div>"
@@ -138,8 +141,8 @@ export default function IpcChart() {
             }
           )}, ${date.getFullYear()}`;
           setToolTip(
-            `<div style="font-size: 22px; margin: 4px 0px; color: #20262E"> Indice: ${additionalDataForTimestamp.indice}</div>` +
-              `<div style="font-size: 18px; margin: 4px 0px; color: #20262E; line-height: 0.85;">Inflación<br/>mensual: ${additionalDataForTimestamp.monthly_inflation}</div>` +
+            `<div style="font-size: 22px; margin: 4px 0px; color: #20262E"> Indice: ${additionalDataForTimestamp.indice}%</div>` +
+              `<div style="font-size: 18px; margin: 4px 0px; color: #20262E; line-height: 0.85;">Inflación<br/>mensual: ${additionalDataForTimestamp.monthly_inflation}%</div>` +
               "<div>" +
               dateStr +
               "</div>"
@@ -169,7 +172,7 @@ export default function IpcChart() {
             display: "block",
             right: "3px",
             top: "3px",
-            width: "145px",
+            width: "170px",
             height: "70px",
             position: "absolute",
             padding: "5px",

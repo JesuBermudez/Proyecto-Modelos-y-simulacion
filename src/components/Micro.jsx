@@ -1,3 +1,4 @@
+import "./charts/chart.css";
 import { useState } from "react";
 import { HorizontalButton } from "./componets/Buttons";
 import OroChart from "./charts/OroChart";
