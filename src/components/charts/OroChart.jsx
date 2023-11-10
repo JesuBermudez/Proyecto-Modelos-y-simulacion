@@ -2,12 +2,16 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { ColorType, createChart } from "lightweight-charts";
 import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
+import { FaSpinner } from "react-icons/fa6";
 
 export default function OroChart() {
   const chartContainerRefP = useRef();
   const chartContainerRefS = useRef();
   const chartP = useRef();
   const chartS = useRef();
+  const predictionSeriesP = useRef();
+  const predictionSeriesS = useRef();
+  const [days, setDays] = useState("");
   const [dataP, setDataP] = useState([]);
   const [dataS, setDataS] = useState([]);
   const [goingUpP, setGoingUpP] = useState(false);
@@ -16,6 +20,42 @@ export default function OroChart() {
   const [changeValueS, setChangeS] = useState(0.0);
   const [changePercentageValueP, setChangePercentageP] = useState(0.0);
   const [changePercentageValueS, setChangePercentageS] = useState(0.0);
+  const [lineAdded, setLineAdded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [toolTipP, setToolTipP] = useState({
+    width: "140px",
+    height: "95px",
+    position: "absolute",
+    display: "none",
+    left: "12px",
+    top: "12px",
+    padding: "8px",
+    boxSizing: "border-box",
+    fontSize: "12px",
+    textAlign: "left",
+    zIndex: "1000",
+    background: "white",
+    color: "black",
+    border: "2px solid #2962FF",
+    content: "",
+  });
+  const [toolTipS, setToolTipS] = useState({
+    width: "140px",
+    height: "95px",
+    position: "absolute",
+    display: "none",
+    left: "12px",
+    top: "12px",
+    padding: "8px",
+    boxSizing: "border-box",
+    fontSize: "12px",
+    textAlign: "left",
+    zIndex: "1000",
+    background: "white",
+    color: "black",
+    border: "2px solid #2962FF",
+    content: "",
+  });
 
   useEffect(() => {
     axios
@@ -83,6 +123,10 @@ export default function OroChart() {
           ? "#34a853"
           : "#ea4335";
 
+      predictionSeriesP.current = chartP.current.addLineSeries({
+        color: "rgb(4, 111, 232)",
+      });
+
       const newSeriesP = chartP.current.addAreaSeries({
         lineColor: lineColorP,
         topColor: lineColorP,
@@ -130,6 +174,10 @@ export default function OroChart() {
           ? "#34a853"
           : "#ea4335";
 
+      predictionSeriesS.current = chartS.current.addLineSeries({
+        color: "rgb(4, 111, 232)",
+      });
+
       const newSeriesS = chartS.current.addAreaSeries({
         lineColor: lineColorS,
         topColor: lineColorS,
@@ -141,6 +189,160 @@ export default function OroChart() {
       return () => [chartS.current.remove()];
     }
   }, [dataS]);
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    if (!lineAdded) {
+      setLoading(
+        <span style={{ color: "white" }}>
+          <FaSpinner />
+        </span>
+      );
+      axios
+        .get(`https://mpf.fly.dev/predicciones/microeconomicas/metales/${days}`)
+        .then((response) => {
+          const container =
+            document.getElementsByClassName("chart-container")[0];
+
+          const toolTipWidth = 140;
+          const toolTipHeight = 95;
+          const toolTipMargin = 15;
+
+          chartP.current.subscribeCrosshairMove((param) => {
+            if (
+              param.point === undefined ||
+              !param.time ||
+              param.point.x < 0 ||
+              param.point.y < 0 ||
+              param.seriesData.get(predictionSeriesP.current) == undefined
+            ) {
+              setToolTipP((prevState) => ({ ...prevState, display: "none" }));
+            } else {
+              const date = new Date(param.time * 1000);
+              const dateStr = `${date.getUTCDate()} ${date.toLocaleString(
+                "default",
+                {
+                  month: "short",
+                }
+              )}, ${date.getFullYear()}`;
+              const data = param.seriesData.get(predictionSeriesP.current);
+              const price = data.value !== undefined ? data.value : data.close;
+              const content = `<div>Predicción</div>
+                <div style="font-size: 24px; margin: 4px 0px;">${price.toFixed(
+                  2
+                )}</div><div>${dateStr}</div>`;
+
+              const coordinate =
+                predictionSeriesP.current.priceToCoordinate(price);
+              let shiftedCoordinate = param.point.x - 50;
+              shiftedCoordinate = Math.max(
+                0,
+                Math.min(
+                  container.clientWidth - toolTipWidth,
+                  shiftedCoordinate
+                )
+              );
+              const coordinateY =
+                coordinate - toolTipHeight - toolTipMargin > 0
+                  ? coordinate - toolTipHeight - toolTipMargin
+                  : Math.max(
+                      0,
+                      Math.min(
+                        container.clientHeight - toolTipHeight - toolTipMargin,
+                        coordinate + toolTipMargin
+                      )
+                    );
+              setToolTipP((prevState) => ({
+                ...prevState,
+                left: shiftedCoordinate + "px",
+                top: coordinateY + "px",
+                display: "block",
+                content,
+              }));
+            }
+          });
+
+          chartS.current.subscribeCrosshairMove((param) => {
+            if (
+              param.point === undefined ||
+              !param.time ||
+              param.point.x < 0 ||
+              param.point.y < 0 ||
+              param.seriesData.get(predictionSeriesS.current) == undefined
+            ) {
+              setToolTipS((prevState) => ({ ...prevState, display: "none" }));
+            } else {
+              const date = new Date(param.time * 1000);
+              const dateStr = `${date.getUTCDate()} ${date.toLocaleString(
+                "default",
+                {
+                  month: "short",
+                }
+              )}, ${date.getFullYear()}`;
+              const data = param.seriesData.get(predictionSeriesS.current);
+              const price = data.value !== undefined ? data.value : data.close;
+              const content = `<div>Predicción</div>
+                <div style="font-size: 24px; margin: 4px 0px;">${price.toFixed(
+                  2
+                )}</div><div>${dateStr}</div>`;
+
+              const coordinate =
+                predictionSeriesS.current.priceToCoordinate(price);
+              let shiftedCoordinate = param.point.x - 50;
+              shiftedCoordinate = Math.max(
+                0,
+                Math.min(
+                  container.clientWidth - toolTipWidth,
+                  shiftedCoordinate
+                )
+              );
+              const coordinateY =
+                coordinate - toolTipHeight - toolTipMargin > 0
+                  ? coordinate - toolTipHeight - toolTipMargin
+                  : Math.max(
+                      0,
+                      Math.min(
+                        container.clientHeight - toolTipHeight - toolTipMargin,
+                        coordinate + toolTipMargin
+                      )
+                    );
+              setToolTipS((prevState) => ({
+                ...prevState,
+                left: shiftedCoordinate + "px",
+                top: coordinateY + "px",
+                display: "block",
+                content,
+              }));
+            }
+          });
+
+          setLoading("Generar");
+
+          predictionSeriesP.current.update(dataP[dataP.length - 1]);
+          predictionSeriesS.current.update(dataS[dataS.length - 1]);
+
+          response.data.shift();
+
+          response.data.forEach((point, index) => {
+            setTimeout(() => {
+              predictionSeriesP.current.update({
+                time: new Date(point[0]).getTime() / 1000,
+                value: point[1][0].oro.compra,
+              });
+              chartP.current.timeScale().scrollToRealTime();
+
+              predictionSeriesS.current.update({
+                time: new Date(point[0]).getTime() / 1000,
+                value: point[1][0].oro.venta,
+              });
+              chartS.current.timeScale().scrollToRealTime();
+            }, index + 1 * 40);
+          });
+        });
+
+      setLineAdded(true);
+    }
+  };
 
   return (
     <>
@@ -180,7 +382,33 @@ export default function OroChart() {
           {dataP.length != 0 &&
             new Date(dataP[dataP.length - 1].time * 1000).toUTCString()}
         </p>
-        <div className="chart-container" ref={chartContainerRefP}></div>
+        <div className="chart-container" ref={chartContainerRefP}>
+          <div
+            style={toolTipP}
+            dangerouslySetInnerHTML={{ __html: toolTipP.content }}
+          />
+        </div>
+        <form className="prediction-container" onSubmit={handleButtonClick}>
+          <label>Predicción:</label>
+          <input
+            required
+            type="number"
+            name="days"
+            min="1"
+            max="5"
+            step="1"
+            value={days}
+            onChange={(e) => setDays(e.target.value)}
+          />
+          <p>dias</p>
+          <button
+            style={
+              loading ? { background: "grey", cursor: "not-allowed" } : null
+            }
+          >
+            {loading ? loading : "Generar"}
+          </button>
+        </form>
       </article>
       <article className="chart">
         <h2>Precio de venta</h2>
@@ -218,7 +446,12 @@ export default function OroChart() {
           {dataS.length != 0 &&
             new Date(dataS[dataS.length - 1].time * 1000).toUTCString()}
         </p>
-        <div className="chart-container" ref={chartContainerRefS}></div>
+        <div className="chart-container" ref={chartContainerRefS}>
+          <div
+            style={toolTipS}
+            dangerouslySetInnerHTML={{ __html: toolTipS.content }}
+          />
+        </div>
       </article>
     </>
   );

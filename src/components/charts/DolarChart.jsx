@@ -1,4 +1,3 @@
-import "./chart.css";
 import React, { useState, useEffect, useRef } from "react";
 import { ColorType, createChart } from "lightweight-charts";
 import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
@@ -14,8 +13,8 @@ export default function DolarChart() {
   const chartContainerRef = useRef();
   const chart = useRef();
   const predictionSeries = useRef();
-  const [days, setDays] = useState("");
   const series = useRef();
+  const [days, setDays] = useState("");
   const [data, setData] = useState([]);
   const [goingUp, setGoingUp] = useState(false);
   const [changeValue, setChange] = useState(0.0);

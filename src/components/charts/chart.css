@@ -61,6 +61,7 @@
 
 .prediction-container {
   display: flex;
+  align-items: center;
   gap: 7px;
 
   & input {
@@ -80,6 +81,7 @@
   }
 
   & button {
+    height: calc(0.8rem + 15px);
     background-color: initial;
     background-image: linear-gradient(#464d55, #25292e);
     border-radius: 8px;
@@ -88,9 +90,9 @@
     box-sizing: border-box;
     color: #fff;
     cursor: pointer;
-    margin: 0;
+    margin-left: 15px;
     outline: none;
-    padding: 0 20px;
+    padding: 0.4rem 1rem;
     text-align: center;
     transform: translate3d(0, 0, 0);
     transition: all 150ms;

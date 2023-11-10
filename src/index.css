@@ -17,7 +17,7 @@ body {
 }
 
 .content {
-    height: 80vh;
+    height: 85vh;
     margin-top: 10px;
     display: flex;
     align-items: center;
@@ -47,5 +47,5 @@ section {
 }
 
 article {
-    padding: 1% 2.5%;
+    padding: 1.2% 2.5%;
 }
