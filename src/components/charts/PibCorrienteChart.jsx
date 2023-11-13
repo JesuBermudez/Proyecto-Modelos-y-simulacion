@@ -45,8 +45,12 @@ export default function PibCorrienteChart() {
           apiData.sort((a, b) => new Date(a.year) - new Date(b.year));
 
           let TransformedData = apiData.map((p) => {
+            let date = new Date(p.year);
+            let localDate = new Date(
+              date.getTime() - date.getTimezoneOffset() * 60000
+            );
             return {
-              time: new Date(p.year).getTime() / 1000,
+              time: localDate.getTime() / 1000,
               value: parseFloat(p.pib.split(",").join(".")),
             };
           });
@@ -238,7 +242,15 @@ export default function PibCorrienteChart() {
       </div>
       <p className="chart__time">
         {data.length != 0 &&
-          new Date(data[data.length - 1].time * 1000).toUTCString()}
+          new Date(data[data.length - 1].time * 1000).toLocaleDateString(
+            undefined,
+            {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }
+          )}
       </p>
       <div className="chart-container" ref={chartContainerRef}>
         <div

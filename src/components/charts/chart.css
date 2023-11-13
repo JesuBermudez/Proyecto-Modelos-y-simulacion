@@ -1,6 +1,7 @@
 .chart {
   & h2 {
     padding-bottom: 10px;
+    margin: 5px 0;
     border-bottom: 1px solid rgba(128, 128, 128, 0.35);
     font-size: 1.5rem;
     font-weight: 600;
@@ -27,7 +28,7 @@
   }
 
   .chart-changeValue {
-    margin-left: 10px;
+    margin: 0 10px;
   }
 }
 
@@ -110,4 +111,29 @@
   & button:focus {
     box-shadow: rgba(0, 0, 0, 0.5) 0 0 0 3px;
   }
+}
+
+.company-chart__title {
+  position: relative;
+
+  & h2 {
+    padding-left: 50px;
+  }
+
+  & span {
+    font-size: 34px;
+    position: absolute;
+    display: flex;
+    border-radius: 5px;
+    top: 0;
+    left: 0;
+  }
+}
+
+.company-chart__title span:hover {
+  box-shadow: rgba(0, 1, 0, 0.2) 0 2px 8px;
+}
+
+.company-chart__title span:active {
+  background: rgba(128, 128, 128, 0.2);
 }

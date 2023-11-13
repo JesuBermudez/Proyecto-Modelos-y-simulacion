@@ -69,15 +69,23 @@ export default function PlatinoChart() {
           apiData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
           let TransformedDataP = apiData.map((p) => {
+            let date = new Date(p.date);
+            let localDate = new Date(
+              date.getTime() - date.getTimezoneOffset() * 60000
+            );
             return {
-              time: new Date(p.date).getTime() / 1000,
+              time: localDate.getTime() / 1000,
               value: p.platinum.purchase_price,
             };
           });
 
           let TransformedDataS = apiData.map((p) => {
+            let date = new Date(p.date);
+            let localDate = new Date(
+              date.getTime() - date.getTimezoneOffset() * 60000
+            );
             return {
-              time: new Date(p.date).getTime() / 1000,
+              time: localDate.getTime() / 1000,
               value: p.platinum.sales_price,
             };
           });
@@ -380,7 +388,15 @@ export default function PlatinoChart() {
         </div>
         <p className="chart__time">
           {dataP.length != 0 &&
-            new Date(dataP[dataP.length - 1].time * 1000).toUTCString()}
+            new Date(dataP[dataP.length - 1].time * 1000).toLocaleDateString(
+              undefined,
+              {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }
+            )}
         </p>
         <div className="chart-container" ref={chartContainerRefP}>
           <div
@@ -444,7 +460,15 @@ export default function PlatinoChart() {
         </div>
         <p className="chart__time">
           {dataS.length != 0 &&
-            new Date(dataS[dataS.length - 1].time * 1000).toUTCString()}
+            new Date(dataS[dataS.length - 1].time * 1000).toLocaleDateString(
+              undefined,
+              {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }
+            )}
         </p>
         <div className="chart-container" ref={chartContainerRefS}>
           <div

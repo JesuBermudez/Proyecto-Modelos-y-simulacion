@@ -1,51 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
 * {
-    margin: 0;
+  margin: 0;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    min-height: 90vh;
-    padding: 0 5vw;
+  font-family: "Poppins", sans-serif;
+  min-height: 90vh;
+  padding: 0 5vw;
 
-    & h1 {
-        line-height: 2.5;
-        border-bottom: 1px solid rgba(128, 128, 128, 0.35);
-        margin-top: 10px;
-    }
+  & h1 {
+    line-height: 2.5;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.35);
+    margin-top: 10px;
+  }
 }
 
 .content {
-    height: 85vh;
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  height: 85vh;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .content-buttons {
-    height: 80%;
-    width: 17%;
-    display: flex;
-    flex-flow: row wrap;
-    gap: 10px;
+  height: 80%;
+  width: 17%;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
 }
 
 section {
-    height: 80%;
-    width: 80%;
-    overflow: auto;
-    background-color: rgba(128, 128, 128, 0.05);
+  height: 80%;
+  width: 80%;
+  overflow: auto;
+  background-color: rgba(128, 128, 128, 0.05);
 }
 
 .horizontal-buttons {
-    height: fit-content;
-    width: 100%;
-    display: flex;
-    justify-content: stretch;
+  height: fit-content;
+  width: 100%;
+  display: flex;
+  justify-content: stretch;
 }
 
-article {
-    padding: 1.2% 2.5%;
+.chart {
+  padding: 1.2% 2.5%;
+}
+
+.inversiones-content {
+  width: fit-content;
+  margin: auto;
+  padding-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & h2 {
+    padding: 10px 0;
+    margin: 5px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.35);
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
 }

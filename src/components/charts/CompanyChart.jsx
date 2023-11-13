@@ -1,29 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
-import { ColorType, createChart } from "lightweight-charts";
-import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
-import { FaSpinner } from "react-icons/fa6";
-import io from "socket.io-client";
 import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { ColorType, createChart } from "lightweight-charts";
+import {
+  BsArrowDownShort,
+  BsArrowUpShort,
+  BsArrowLeftShort,
+} from "react-icons/bs";
+import { FaSpinner } from "react-icons/fa6";
 
-const socket = io(
-  "https://api-node-motor-finaciero-production.up.railway.app/"
-);
-
-export default function DolarChart() {
+export default function CompanyChart({ company, onClose }) {
   const chartContainerRef = useRef();
   const chart = useRef();
   const predictionSeries = useRef();
-  const series = useRef();
-  const [days, setDays] = useState("");
   const [data, setData] = useState([]);
+  const [adicionalData, setAdicionalData] = useState({});
   const [goingUp, setGoingUp] = useState(false);
-  const [changeValue, setChange] = useState(0.0);
+  const [change, setChange] = useState(0.0);
   const [changePercentageValue, setChangePercentage] = useState(0.0);
-  const [yesterdayValue, setYesterdayValue] = useState(0.0);
+  const [minutes, setMinutes] = useState("");
   const [lineAdded, setLineAdded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toolTip, setToolTip] = useState({
-    width: "110px",
+    width: "125px",
     height: "95px",
     position: "absolute",
     display: "none",
@@ -41,7 +39,44 @@ export default function DolarChart() {
   });
 
   useEffect(() => {
-    if (data.length == 0) {
+    axios
+      .get(
+        `https://api-node-motor-finaciero-production.up.railway.app/api/micro/acciones/${company.name}`
+      )
+      .then((response) => {
+        let apiData = response.data.data;
+
+        if (apiData != undefined) {
+          apiData.sort(
+            (a, b) =>
+              new Date(a.data.hour.split("/").reverse().join("/")) -
+              new Date(b.data.hour.split("/").reverse().join("/"))
+          );
+
+          const year = new Date(Date.now()).getFullYear();
+
+          let TransformedData = apiData.map((c) => {
+            let date = new Date(
+              `${c.data.hour.split("/").reverse().join("/")}/${year}`
+            );
+            let localDate = new Date(
+              date.getTime() - date.getTimezoneOffset() * 60000
+            );
+            return {
+              time: localDate.getTime() / 1000,
+              value: parseFloat(
+                c.data.last.split(".").join("").split(",").join(".")
+              ),
+            };
+          });
+          setAdicionalData(apiData[apiData.length - 1].data);
+          setData(TransformedData);
+        }
+      });
+  }, []);
+
+  useEffect(() => {
+    if (data.length > 0) {
       chart.current = createChart(chartContainerRef.current, {
         layout: {
           background: { type: ColorType.Solid, color: "transparent" },
@@ -53,6 +88,10 @@ export default function DolarChart() {
           visible: true,
           borderVisible: false,
         },
+        localization: {
+          priceFormatter: (p) => "$" + p.toFixed(2),
+        },
+        timeScale: { barSpacing: 50 },
         grid: {
           vertLines: {
             visible: false,
@@ -61,107 +100,58 @@ export default function DolarChart() {
         height: 300,
       });
 
+      if (data.length > 1) {
+        let change = data[data.length - 1].value - data[data.length - 2].value;
+        setChange(change);
+        setChangePercentage((change / data[data.length - 2].value) * 100);
+        setGoingUp(data[data.length - 1].value >= data[data.length - 2].value);
+      } else {
+        setChange(
+          parseFloat(
+            adicionalData.vari.split(".").join("").split(",").join(".")
+          )
+        );
+        setChangePercentage(
+          parseFloat(
+            adicionalData.percentVar
+              .substring(0, adicionalData.percentVar.length - 1)
+              .split(".")
+              .join("")
+              .split(",")
+              .join(".")
+          )
+        );
+        setGoingUp(adicionalData.percentVar[0] != "-");
+      }
+
+      let lineColor =
+        adicionalData.percentVar[0] != "-" ? "#34a853" : "#ea4335";
+
       predictionSeries.current = chart.current.addLineSeries({
         color: "rgb(4, 111, 232)",
       });
 
-      series.current = chart.current.addAreaSeries({
-        lineColor: "rgb(0, 150, 255)",
-        topColor: "rgb(0, 150, 255)",
-        bottomColor: "rgba(255, 255, 255, 0)",
-      });
-
-      axios
-        .get(
-          "https://api-node-motor-finaciero-production.up.railway.app/api/macro/dolar/colombia"
-        )
-        .then((response) => {
-          let apiData = response.data.dataSort;
-
-          if (apiData != undefined) {
-            apiData.sort(
-              (a, b) => new Date(a.year_month_day) - new Date(b.year_month_day)
-            );
-
-            let TransformedData = apiData.map((d) => {
-              let date = new Date(d.year_month_day);
-              let localDate = new Date(
-                date.getTime() - date.getTimezoneOffset() * 60000
-              );
-              return {
-                time: localDate.getTime() / 1000,
-                value: d.dolar,
-              };
-            });
-            series.current.setData(TransformedData);
-            chart.current.timeScale().applyOptions({
-              barSpacing: 40,
-            });
-
-            setYesterdayValue(
-              TransformedData[TransformedData.length - 2].value
-            );
-            setData(TransformedData);
-          }
-        });
-    }
-
-    const handleDataReceived = (dataReceived) => {
-      let date = new Date(dataReceived.time);
-
-      let localDate = new Date(
-        date.getTime() - date.getTimezoneOffset() * 60000
-      );
-
-      dataReceived.time = localDate.getTime() / 1000;
-
-      setData((prevData) => {
-        if (
-          prevData.length > 0 &&
-          dataReceived.value &&
-          prevData[prevData.length - 1].value != dataReceived.value
-        ) {
-          series.current.update(dataReceived);
-          chart.current.timeScale().scrollToRealTime();
-
-          return [...prevData, dataReceived];
-        } else {
-          return prevData;
-        }
-      });
-    };
-
-    socket.on("dataReceived", handleDataReceived);
-
-    return () => {
-      socket.off("dataReceived", handleDataReceived);
-      if (chart.current) {
-        chart.current.remove();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (data.length > 1) {
-      let change = data[data.length - 1].value - yesterdayValue;
-      setChange(change.toFixed(4));
-      setChangePercentage((change / yesterdayValue) * 100);
-
-      setGoingUp(data[data.length - 1].value >= yesterdayValue);
-
-      let lineColor =
-        data[data.length - 1].value >= yesterdayValue ? "#34a853" : "#ea4335";
-
-      series.current.applyOptions({
+      const newSeries = chart.current.addAreaSeries({
         lineColor: lineColor,
         topColor: lineColor,
         bottomColor: "rgba(255, 255, 255, 0)",
       });
+
+      newSeries.setData(data);
+
+      return () => [chart.current.remove()];
     }
   }, [data]);
 
   const handleButtonClick = (e) => {
     e.preventDefault();
+
+    let date = new Date(Date.now());
+    const dayMonth = date.toLocaleDateString().split("/").slice(0, 2).join("-");
+    date.setMinutes(date.getMinutes() + parseInt(minutes));
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+
     if (!lineAdded) {
       setLoading(
         <span style={{ color: "white" }}>
@@ -169,12 +159,16 @@ export default function DolarChart() {
         </span>
       );
       axios
-        .get(`https://mpf.fly.dev/predicciones/macroeconomicas/dolar/${days}`)
+        .get(
+          `https://mpf.fly.dev/predicciones/microeconomicas/acciones/${dayMonth}-${
+            hour < 10 ? "0" : ""
+          }${hour}:${minute < 10 ? "0" : ""}${minute}/${company.name}`
+        )
         .then((response) => {
           const container =
             document.getElementsByClassName("chart-container")[0];
 
-          const toolTipWidth = 110;
+          const toolTipWidth = 125;
           const toolTipHeight = 95;
           const toolTipMargin = 15;
 
@@ -188,17 +182,13 @@ export default function DolarChart() {
             ) {
               setToolTip((prevState) => ({ ...prevState, display: "none" }));
             } else {
-              const date = new Date(param.time * 1000);
-              const dateStr = `${date.getUTCDate()} ${date.toLocaleString(
-                "default",
-                {
-                  month: "short",
-                }
-              )}, ${date.getFullYear()}`;
+              const dateStr = `Hora: ${date.getHours()}:${date.getMinutes()}`;
               const data = param.seriesData.get(predictionSeries.current);
               const price = data.value !== undefined ? data.value : data.close;
               const content = `<div>Predicción</div>
-                <div style="font-size: 24px; margin: 4px 0px;">${price}</div><div>${dateStr}</div>`;
+                <div style="font-size: 24px; margin: 4px 0px;">$${price.toFixed(
+                  2
+                )}</div><div>${dateStr}</div>`;
 
               const coordinate =
                 predictionSeries.current.priceToCoordinate(price);
@@ -233,16 +223,18 @@ export default function DolarChart() {
           setLoading("Generar");
 
           predictionSeries.current.update(data[data.length - 1]);
-
-          response.data.forEach((point, index) => {
-            setTimeout(() => {
-              predictionSeries.current.update({
-                time: new Date(point.year_month_day).getTime() / 1000,
-                value: point.dolar,
-              });
-              chart.current.timeScale().scrollToRealTime();
-            }, index + 1 * 40);
+          predictionSeries.current.update({
+            time:
+              new Date(
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate(),
+                response.data.time.split(":")[0],
+                response.data.time.split(":")[1]
+              ).getTime() / 1000,
+            value: response.data.value,
           });
+          chart.current.timeScale().scrollToRealTime();
         });
 
       setLineAdded(true);
@@ -251,12 +243,17 @@ export default function DolarChart() {
 
   return (
     <article className="chart">
-      <h2>Dólar estadounidense a Peso colombiano</h2>
+      <div className="company-chart__title">
+        <h2>{company.name}</h2>
+        <span onClick={() => onClose()}>
+          <BsArrowLeftShort />
+        </span>
+      </div>
       <div className="chart-flex">
         <h3>
           {data.length == 0
             ? "Loading..."
-            : data[data.length - 1].value.toFixed(4)}
+            : `$${data[data.length - 1].value.toFixed(4)}`}
         </h3>
         <div
           className="chart-flex__box"
@@ -272,27 +269,34 @@ export default function DolarChart() {
           ) : (
             <BsArrowDownShort className="box__icon" />
           )}
-          <p>{Math.abs(changePercentageValue.toFixed(2))} %</p>
+          <p>{Math.abs(changePercentageValue.toFixed(2))}%</p>
         </div>
         <p
           className="chart-changeValue"
           style={{ color: goingUp ? "#137333" : "#a50e0e" }}
         >
-          {changeValue < 0 ? "" : "+"}
-          {changeValue}
+          {change < 0 ? "" : "+"}${change}
         </p>
+        <p
+          style={{
+            paddingLeft: "10px",
+            borderLeft: "1px solid rgba(128, 128, 128, 0.35)",
+          }}
+        >
+          Max: ${adicionalData.max}
+        </p>
+        <p style={{ marginLeft: "10px" }}>Vol: ${adicionalData.vol}</p>
       </div>
       <p className="chart__time">
         {data.length != 0 &&
-          new Date(data[data.length - 1].time * 1000).toLocaleDateString(
-            undefined,
-            {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }
-          )}
+          new Date(
+            data[data.length - 1].time * 1000 + 24 * 60 * 60 * 1000
+          ).toLocaleDateString(undefined, {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
       </p>
       <div className="chart-container" ref={chartContainerRef}>
         <div
@@ -305,14 +309,14 @@ export default function DolarChart() {
         <input
           required
           type="number"
-          name="days"
+          name="minutes"
           min="1"
-          max="2"
+          max="60"
           step="1"
-          value={days}
-          onChange={(e) => setDays(e.target.value)}
+          value={minutes}
+          onChange={(e) => setMinutes(e.target.value)}
         />
-        <p>dias</p>
+        <p>minutos</p>
         <button
           style={loading ? { background: "grey", cursor: "not-allowed" } : null}
         >
@@ -321,11 +325,4 @@ export default function DolarChart() {
       </form>
     </article>
   );
-}
-
-function getTimeToday() {
-  let date = new Date(Date.now());
-  return `${date.getDate()} ${date.toLocaleString("default", {
-    month: "short",
-  })}, ${date.getFullYear()} ${date.toLocaleTimeString()}`;
 }

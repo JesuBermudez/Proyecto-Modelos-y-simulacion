@@ -45,16 +45,23 @@ export default function IpcChart() {
             apiData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
             let TransformedData = apiData.map((c) => {
+              let date = new Date(c.date);
+              let localDate = new Date(
+                date.getTime() - date.getTimezoneOffset() * 60000
+              );
               return {
-                time: new Date(c.date).getTime() / 1000,
+                time: localDate.getTime() / 1000,
                 value: c.indice,
               };
             });
 
             let additionalData = {};
             apiData.forEach((item) => {
-              const timestamp = new Date(item.date).getTime() / 1000;
-              additionalData[timestamp] = {
+              let date = new Date(item.date);
+              let localDate = new Date(
+                date.getTime() - date.getTimezoneOffset() * 60000
+              );
+              additionalData[localDate.getTime() / 1000] = {
                 annual_current_inflation: item.annual_current_inflation,
                 annual_inflation: item.annual_inflation,
                 monthly_inflation: item.monthly_inflation,
@@ -262,7 +269,15 @@ export default function IpcChart() {
       </h2>
       <p className="chart__time">
         {data.length != 0 &&
-          new Date(data[data.length - 1].time * 1000).toUTCString()}
+          new Date(data[data.length - 1].time * 1000).toLocaleDateString(
+            undefined,
+            {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }
+          )}
       </p>
       <div className="chart-container" ref={chartContainerRef}>
         <div
