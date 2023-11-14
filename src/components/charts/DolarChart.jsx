@@ -58,7 +58,7 @@ export default function DolarChart() {
             visible: false,
           },
         },
-        height: 300,
+        height: 285,
       });
 
       predictionSeries.current = chart.current.addLineSeries({
@@ -307,7 +307,7 @@ export default function DolarChart() {
           type="number"
           name="days"
           min="1"
-          max="2"
+          max="5"
           step="1"
           value={days}
           onChange={(e) => setDays(e.target.value)}

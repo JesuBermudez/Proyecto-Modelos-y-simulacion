@@ -82,7 +82,7 @@ export default function PibConstanteChart() {
             visible: false,
           },
         },
-        height: 300,
+        height: 285,
       });
 
       let change = data[data.length - 1].value - data[data.length - 2].value;

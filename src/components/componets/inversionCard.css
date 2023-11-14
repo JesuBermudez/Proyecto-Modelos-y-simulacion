@@ -1,0 +1,178 @@
+.inversion {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1001;
+}
+
+.inversion-content {
+  position: relative;
+  height: 320px;
+  width: 370px;
+  padding: 5px 15px 10px;
+  border-radius: 7px;
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+.inversion-content::before {
+  content: "";
+  height: 335px;
+  width: 400px;
+  border-radius: 7px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: white;
+  z-index: -1;
+}
+
+.inversion__title {
+  position: relative;
+}
+
+.inversion__title h2 {
+  margin: 5px 0;
+  padding: 10px 0 10px 50px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.35);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.inversion__title span {
+  font-size: 34px;
+  position: absolute;
+  display: flex;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+}
+
+.inversion__title span:hover {
+  box-shadow: rgba(0, 1, 0, 0.2) 0 2px 8px;
+}
+
+.inversion__title span:active {
+  background: rgba(128, 128, 128, 0.2);
+}
+
+.inversion-subtitle {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.inversion-content form {
+  width: fit-content;
+  margin: auto;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #ededed;
+  border-radius: 6px;
+
+  & .inversion__acciones {
+    margin: 10px 0;
+    display: flex;
+  }
+
+  & .inversion__acciones label {
+    margin-right: 10px;
+  }
+
+  & #accionesInput {
+    width: 45px;
+    border: none;
+    margin: 0 4px;
+    padding: 0.4rem;
+    border-radius: 0.4rem;
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 7px 7px 15px #dbdbdb;
+    transition: 0.3s;
+  }
+
+  & #accionesInput:focus {
+    outline-color: #e8e8e8;
+    background: #e8e8e8;
+    box-shadow: inset 7px 7px 20px #c5c5c5, inset -7px -7px 20px #ffffff;
+    transition: 0.3s;
+  }
+
+  & label {
+    font-weight: 600;
+  }
+}
+
+#montoInput {
+    font-size: 22px;
+    border: none;
+    border-bottom: 2px solid grey;
+    background: transparent;
+}
+
+.inversion-total {
+    display: flex;
+    align-items: center;
+}
+
+.inversion-total p:last-child {
+    font-size: 19px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.inversion__submit-button {
+    width: 100%;
+    font-size: 17px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    margin: 8px 0 4px;
+    padding: 8px;
+    color: #fff;
+    background-color: rgba(0, 119, 255, .8);
+    cursor: pointer;
+    transition: all .05s;
+}
+
+.inversion__submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.inversion__submit-button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+label + .acciones-button {
+    font-size: 20px;
+    color: #fff;
+    width: 28px;
+    border: 1px solid red;
+    border-radius: 4px;
+    background-color: rgba(199, 0, 0, 0.45);
+    cursor: pointer;
+}
+
+input + .acciones-button {
+    font-size: 19px;
+    color: #fff;
+    width: 28px;
+    border: 1px solid green;
+    border-radius: 4px;
+    background-color: rgba(0, 199, 0, 0.45);
+    cursor: pointer;
+}
+
+.final-conclusion {
+    font-size: 18px;
+    padding: 4px;
+}

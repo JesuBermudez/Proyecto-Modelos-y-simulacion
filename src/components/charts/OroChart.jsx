@@ -114,7 +114,7 @@ export default function OroChart() {
             visible: false,
           },
         },
-        height: 300,
+        height: 285,
       });
 
       let changeP =
@@ -165,7 +165,7 @@ export default function OroChart() {
             visible: false,
           },
         },
-        height: 300,
+        height: 285,
       });
 
       let changeS =

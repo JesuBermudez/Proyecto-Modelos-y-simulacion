@@ -93,7 +93,7 @@ export default function IpcChart() {
               timeScale: {
                 barSpacing: 12,
               },
-              height: 300,
+              height: 285,
             });
 
             predictionSeries.current = chart.current.addLineSeries({

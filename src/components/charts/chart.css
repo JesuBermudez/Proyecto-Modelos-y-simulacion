@@ -125,6 +125,7 @@
     position: absolute;
     display: flex;
     border-radius: 5px;
+    cursor: pointer;
     top: 0;
     left: 0;
   }
@@ -136,4 +137,31 @@
 
 .company-chart__title span:active {
   background: rgba(128, 128, 128, 0.2);
+}
+
+.prediction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.prediction-button {
+  box-sizing: border-box;
+  outline: 0;
+  cursor: pointer;
+  border-radius: 7px;
+  border: 2px solid rgba(4, 122, 232, .85);
+  background-color: rgb(4, 111, 232);
+  margin: 0 15px;
+  padding: 7px 25px;
+  color: #fff;
+  font-weight: 600;
+  transition: all .2s;
+}
+
+.prediction-button:hover{
+  background: 0 0;
+  box-shadow: rgba(0, 1, 0, 0.2) 0 2px 8px;
+  transform: translateY(-2.5px);
+  color: rgb(4, 111, 232);
 }

@@ -7,11 +7,14 @@ import {
   BsArrowLeftShort,
 } from "react-icons/bs";
 import { FaSpinner } from "react-icons/fa6";
+import InversionCard from "../componets/InversionCard";
 
 export default function CompanyChart({ company, onClose }) {
   const chartContainerRef = useRef();
   const chart = useRef();
   const predictionSeries = useRef();
+  const [inversion, setInversion] = useState(false);
+  const [prediction, setPrediction] = useState(0.0);
   const [data, setData] = useState([]);
   const [adicionalData, setAdicionalData] = useState({});
   const [goingUp, setGoingUp] = useState(false);
@@ -97,7 +100,7 @@ export default function CompanyChart({ company, onClose }) {
             visible: false,
           },
         },
-        height: 300,
+        height: 285,
       });
 
       if (data.length > 1) {
@@ -235,94 +238,119 @@ export default function CompanyChart({ company, onClose }) {
             value: response.data.value,
           });
           chart.current.timeScale().scrollToRealTime();
+          setPrediction(response.data.value);
+          setLineAdded(true);
+          setMinutes("");
         });
-
-      setLineAdded(true);
     }
   };
 
   return (
-    <article className="chart">
-      <div className="company-chart__title">
-        <h2>{company.name}</h2>
-        <span onClick={() => onClose()}>
-          <BsArrowLeftShort />
-        </span>
-      </div>
-      <div className="chart-flex">
-        <h3>
-          {data.length == 0
-            ? "Loading..."
-            : `$${data[data.length - 1].value.toFixed(4)}`}
-        </h3>
-        <div
-          className="chart-flex__box"
-          style={{
-            color: goingUp ? "#137333" : "#a50e0e",
-            background: goingUp
-              ? "rgba(47, 205, 47, 0.17)"
-              : "rgba(205, 47, 47, 0.17)",
-          }}
-        >
-          {goingUp ? (
-            <BsArrowUpShort className="box__icon" />
-          ) : (
-            <BsArrowDownShort className="box__icon" />
-          )}
-          <p>{Math.abs(changePercentageValue.toFixed(2))}%</p>
+    <>
+      <article className="chart">
+        <div className="company-chart__title">
+          <h2>{company.name}</h2>
+          <span onClick={() => onClose()}>
+            <BsArrowLeftShort />
+          </span>
         </div>
-        <p
-          className="chart-changeValue"
-          style={{ color: goingUp ? "#137333" : "#a50e0e" }}
-        >
-          {change < 0 ? "" : "+"}${change}
+        <div className="chart-flex">
+          <h3>
+            {data.length == 0
+              ? "Loading..."
+              : `$${data[data.length - 1].value.toFixed(4)}`}
+          </h3>
+          <div
+            className="chart-flex__box"
+            style={{
+              color: goingUp ? "#137333" : "#a50e0e",
+              background: goingUp
+                ? "rgba(47, 205, 47, 0.17)"
+                : "rgba(205, 47, 47, 0.17)",
+            }}
+          >
+            {goingUp ? (
+              <BsArrowUpShort className="box__icon" />
+            ) : (
+              <BsArrowDownShort className="box__icon" />
+            )}
+            <p>{Math.abs(changePercentageValue.toFixed(2))}%</p>
+          </div>
+          <p
+            className="chart-changeValue"
+            style={{ color: goingUp ? "#137333" : "#a50e0e" }}
+          >
+            {change < 0 ? "" : "+"}${change}
+          </p>
+          <p
+            style={{
+              paddingLeft: "10px",
+              borderLeft: "1px solid rgba(128, 128, 128, 0.35)",
+            }}
+          >
+            Max: ${adicionalData.max}
+          </p>
+          <p style={{ marginLeft: "10px" }}>Vol: ${adicionalData.vol}</p>
+        </div>
+        <p className="chart__time">
+          {data.length != 0 &&
+            new Date(
+              data[data.length - 1].time * 1000 + 24 * 60 * 60 * 1000
+            ).toLocaleDateString(undefined, {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
         </p>
-        <p
-          style={{
-            paddingLeft: "10px",
-            borderLeft: "1px solid rgba(128, 128, 128, 0.35)",
-          }}
-        >
-          Max: ${adicionalData.max}
-        </p>
-        <p style={{ marginLeft: "10px" }}>Vol: ${adicionalData.vol}</p>
-      </div>
-      <p className="chart__time">
-        {data.length != 0 &&
-          new Date(
-            data[data.length - 1].time * 1000 + 24 * 60 * 60 * 1000
-          ).toLocaleDateString(undefined, {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-      </p>
-      <div className="chart-container" ref={chartContainerRef}>
-        <div
-          style={toolTip}
-          dangerouslySetInnerHTML={{ __html: toolTip.content }}
-        />
-      </div>
-      <form className="prediction-container" onSubmit={handleButtonClick}>
-        <label>Predicción:</label>
-        <input
-          required
-          type="number"
-          name="minutes"
-          min="1"
-          max="60"
-          step="1"
-          value={minutes}
-          onChange={(e) => setMinutes(e.target.value)}
-        />
-        <p>minutos</p>
-        <button
-          style={loading ? { background: "grey", cursor: "not-allowed" } : null}
-        >
-          {loading ? loading : "Generar"}
-        </button>
-      </form>
-    </article>
+        <div className="chart-container" ref={chartContainerRef}>
+          <div
+            style={toolTip}
+            dangerouslySetInnerHTML={{ __html: toolTip.content }}
+          />
+        </div>
+        <div className="prediction">
+          <form className="prediction-container" onSubmit={handleButtonClick}>
+            <label>Predicción:</label>
+            <input
+              required
+              type="number"
+              name="minutes"
+              min="1"
+              max="60"
+              step="1"
+              value={minutes}
+              onChange={(e) => setMinutes(e.target.value)}
+            />
+            <p>minutos</p>
+            <button
+              style={
+                loading ? { background: "grey", cursor: "not-allowed" } : null
+              }
+            >
+              {loading ? loading : "Generar"}
+            </button>
+          </form>
+          {lineAdded && (
+            <button
+              className="prediction-button"
+              onClick={() =>
+                !inversion &&
+                setInversion(
+                  <InversionCard
+                    company={company}
+                    prediction={prediction}
+                    onClose={() => setInversion(false)}
+                  />
+                )
+              }
+            >
+              Invertir
+            </button>
+          )}
+        </div>
+      </article>
+      {inversion && inversion}
+    </>
   );
 }
