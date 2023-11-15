@@ -70,22 +70,16 @@ export default function PlatinoChart() {
 
           let TransformedDataP = apiData.map((p) => {
             let date = new Date(p.date);
-            let localDate = new Date(
-              date.getTime() - date.getTimezoneOffset() * 60000
-            );
             return {
-              time: localDate.getTime() / 1000,
+              time: date.getTime() / 1000,
               value: p.platinum.purchase_price,
             };
           });
 
           let TransformedDataS = apiData.map((p) => {
             let date = new Date(p.date);
-            let localDate = new Date(
-              date.getTime() - date.getTimezoneOffset() * 60000
-            );
             return {
-              time: localDate.getTime() / 1000,
+              time: date.getTime() / 1000,
               value: p.platinum.sales_price,
             };
           });
@@ -391,6 +385,7 @@ export default function PlatinoChart() {
             new Date(dataP[dataP.length - 1].time * 1000).toLocaleDateString(
               undefined,
               {
+                timeZone: "UTC",
                 weekday: "long",
                 year: "numeric",
                 month: "long",
@@ -463,6 +458,7 @@ export default function PlatinoChart() {
             new Date(dataS[dataS.length - 1].time * 1000).toLocaleDateString(
               undefined,
               {
+                timeZone: "UTC",
                 weekday: "long",
                 year: "numeric",
                 month: "long",

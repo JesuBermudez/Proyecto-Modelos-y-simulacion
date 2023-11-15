@@ -47,11 +47,8 @@ export default function DesempleoChart() {
 
           let TransformedData = apiData.map((u) => {
             let date = new Date(u.year_month);
-            let localDate = new Date(
-              date.getTime() - date.getTimezoneOffset() * 60000
-            );
             return {
-              time: localDate.getTime() / 1000,
+              time: date.getTime() / 1000,
               value: u.unemployment,
             };
           });
@@ -237,6 +234,7 @@ export default function DesempleoChart() {
           new Date(data[data.length - 1].time * 1000).toLocaleDateString(
             undefined,
             {
+              timeZone: "UTC",
               weekday: "long",
               year: "numeric",
               month: "long",

@@ -84,12 +84,12 @@ export default function DolarChart() {
             );
 
             let TransformedData = apiData.map((d) => {
-              let date = new Date(d.year_month_day);
-              let localDate = new Date(
-                date.getTime() - date.getTimezoneOffset() * 60000
-              );
+              const [year, month, day] = d.year_month_day
+                .split("-")
+                .map(Number);
+              const date = new Date(Date.UTC(year, month - 1, day));
               return {
-                time: localDate.getTime() / 1000,
+                time: date.getTime() / 1000,
                 value: d.dolar,
               };
             });
@@ -287,6 +287,7 @@ export default function DolarChart() {
           new Date(data[data.length - 1].time * 1000).toLocaleDateString(
             undefined,
             {
+              timeZone: "UTC",
               weekday: "long",
               year: "numeric",
               month: "long",
@@ -321,11 +322,4 @@ export default function DolarChart() {
       </form>
     </article>
   );
-}
-
-function getTimeToday() {
-  let date = new Date(Date.now());
-  return `${date.getDate()} ${date.toLocaleString("default", {
-    month: "short",
-  })}, ${date.getFullYear()} ${date.toLocaleTimeString()}`;
 }

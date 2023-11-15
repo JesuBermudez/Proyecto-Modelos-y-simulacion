@@ -47,11 +47,8 @@ export default function InflacionChart() {
 
           let TransformedData = apiData.map((i) => {
             let date = new Date(i.year_month);
-            let localDate = new Date(
-              date.getTime() - date.getTimezoneOffset() * 60000
-            );
             return {
-              time: localDate.getTime() / 1000,
+              time: date.getTime() / 1000,
               value: i.inflation,
             };
           });
@@ -236,6 +233,7 @@ export default function InflacionChart() {
           new Date(data[data.length - 1].time * 1000).toLocaleDateString(
             undefined,
             {
+              timeZone: "UTC",
               weekday: "long",
               year: "numeric",
               month: "long",

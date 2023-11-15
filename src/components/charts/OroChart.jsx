@@ -70,22 +70,16 @@ export default function OroChart() {
 
           let TransformedDataP = apiData.map((g) => {
             let date = new Date(g.date);
-            let localDate = new Date(
-              date.getTime() - date.getTimezoneOffset() * 60000
-            );
             return {
-              time: localDate.getTime() / 1000,
+              time: date.getTime() / 1000,
               value: g.gold.purchase_price,
             };
           });
 
           let TransformedDataS = apiData.map((g) => {
             let date = new Date(g.date);
-            let localDate = new Date(
-              date.getTime() - date.getTimezoneOffset() * 60000
-            );
             return {
-              time: localDate.getTime() / 1000,
+              time: date.getTime() / 1000,
               value: g.gold.sales_price,
             };
           });
@@ -391,6 +385,7 @@ export default function OroChart() {
             new Date(dataP[dataP.length - 1].time * 1000).toLocaleDateString(
               undefined,
               {
+                timeZone: "UTC",
                 weekday: "long",
                 year: "numeric",
                 month: "long",
@@ -463,6 +458,7 @@ export default function OroChart() {
             new Date(dataS[dataS.length - 1].time * 1000).toLocaleDateString(
               undefined,
               {
+                timeZone: "UTC",
                 weekday: "long",
                 year: "numeric",
                 month: "long",

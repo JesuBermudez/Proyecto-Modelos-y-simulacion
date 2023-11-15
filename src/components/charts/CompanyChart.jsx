@@ -50,23 +50,21 @@ export default function CompanyChart({ company, onClose }) {
         let apiData = response.data.data;
 
         if (apiData != undefined) {
+          const year = new Date(Date.now()).getFullYear();
           apiData.sort(
             (a, b) =>
-              new Date(a.data.hour.split("/").reverse().join("/")) -
-              new Date(b.data.hour.split("/").reverse().join("/"))
+              new Date(
+                `${a.data.hour.split("/").reverse().join("/")}/${year}`
+              ) -
+              new Date(`${b.data.hour.split("/").reverse().join("/")}/${year}`)
           );
-
-          const year = new Date(Date.now()).getFullYear();
 
           let TransformedData = apiData.map((c) => {
             let date = new Date(
               `${c.data.hour.split("/").reverse().join("/")}/${year}`
             );
-            let localDate = new Date(
-              date.getTime() - date.getTimezoneOffset() * 60000
-            );
             return {
-              time: localDate.getTime() / 1000,
+              time: date.getTime() / 1000,
               value: parseFloat(
                 c.data.last.split(".").join("").split(",").join(".")
               ),
@@ -294,14 +292,16 @@ export default function CompanyChart({ company, onClose }) {
         </div>
         <p className="chart__time">
           {data.length != 0 &&
-            new Date(
-              data[data.length - 1].time * 1000 + 24 * 60 * 60 * 1000
-            ).toLocaleDateString(undefined, {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+            new Date(data[data.length - 1].time * 1000).toLocaleDateString(
+              undefined,
+              {
+                timeZone: "UTC",
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }
+            )}
         </p>
         <div className="chart-container" ref={chartContainerRef}>
           <div
