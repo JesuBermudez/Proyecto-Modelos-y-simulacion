@@ -122,7 +122,7 @@ export default function PibCorrienteChart() {
       axios
         .get(
           `https://mpf.fly.dev/predicciones/macroeconomicas/pib_corriente/${currentYear}/${
-            currentYear + years
+            currentYear + parseInt(years)
           }`
         )
         .then((response) => {

@@ -122,7 +122,7 @@ export default function PibConstanteChart() {
       axios
         .get(
           `https://mpf.fly.dev/predicciones/macroeconomicas/pib_constante/${currentYear}/${
-            currentYear + years
+            currentYear + parseInt(years)
           }`
         )
         .then((response) => {
