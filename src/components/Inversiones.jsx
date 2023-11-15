@@ -3,7 +3,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import { CompanyCard } from "./componets/CompanyCard";
-import CompanyChart from "./charts/companyChart";
+import CompanyChart from "./charts/CompanyChart";
 
 const socket = io(
   "https://api-node-motor-finaciero-production.up.railway.app/"
