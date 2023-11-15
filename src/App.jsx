@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Sections from "./components/Sections";
 import { SectionButton } from "./components/componets/Buttons";
-import Card from "./components/componets/card";
+import Card from "./components/componets/Card";
 
 export default function App() {
   const [selected, setSelected] = useState("micro");
