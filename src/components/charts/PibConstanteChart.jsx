@@ -16,7 +16,7 @@ export default function PibConstanteChart() {
   const [lineAdded, setLineAdded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toolTip, setToolTip] = useState({
-    width: "105px",
+    width: "145px",
     height: "95px",
     position: "absolute",
     display: "none",
@@ -129,7 +129,7 @@ export default function PibConstanteChart() {
           const container =
             document.getElementsByClassName("chart-container")[0];
 
-          const toolTipWidth = 105;
+          const toolTipWidth = 145;
           const toolTipHeight = 95;
           const toolTipMargin = 15;
 
@@ -196,7 +196,7 @@ export default function PibConstanteChart() {
             setTimeout(() => {
               predictionSeries.current.update({
                 time: new Date(point.year).getTime() / 1000,
-                value: parseFloat(point.pib).toFixed(3),
+                value: parseFloat(point.pib),
               });
               chart.current.timeScale().scrollToRealTime();
             }, index + 1 * 40);
@@ -209,7 +209,7 @@ export default function PibConstanteChart() {
 
   return (
     <article className="chart">
-      <h2>PIB Corriente</h2>
+      <h2>PIB Constante</h2>
       <div className="chart-flex">
         <h3>
           {data.length == 0 ? "Loading..." : `$${data[data.length - 1].value}M`}

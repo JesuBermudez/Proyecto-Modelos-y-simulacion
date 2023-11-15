@@ -16,7 +16,7 @@ export default function PibCorrienteChart() {
   const [lineAdded, setLineAdded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toolTip, setToolTip] = useState({
-    width: "105px",
+    width: "145px",
     height: "95px",
     position: "absolute",
     display: "none",
@@ -129,7 +129,7 @@ export default function PibCorrienteChart() {
           const container =
             document.getElementsByClassName("chart-container")[0];
 
-          const toolTipWidth = 105;
+          const toolTipWidth = 145;
           const toolTipHeight = 95;
           const toolTipMargin = 15;
 
@@ -196,7 +196,7 @@ export default function PibCorrienteChart() {
             setTimeout(() => {
               predictionSeries.current.update({
                 time: new Date(point.year).getTime() / 1000,
-                value: parseFloat(point.pib).toFixed(3),
+                value: parseFloat(point.pib),
               });
               chart.current.timeScale().scrollToRealTime();
             }, index + 1 * 40);

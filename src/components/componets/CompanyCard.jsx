@@ -31,7 +31,9 @@ export function CompanyCard({ company, onTap }) {
         <p className="price">${company.data.last}</p>
       </div>
       <div className="date-change">
-        <p className="date">{date.toLocaleDateString()} </p>
+        <p className="date">
+          {date.toLocaleDateString(undefined, { timeZone: "UTC" })}
+        </p>
         <p
           className="change"
           style={{
