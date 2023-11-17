@@ -80,7 +80,7 @@ export default function TipChart() {
             visible: false,
           },
         },
-        height: 285,
+        height: window.innerWidth - window.innerHeight >= 330 ? window.innerHeight / 3 : 285,
       });
 
       let change = data[data.length - 1].value - data[data.length - 2].value;

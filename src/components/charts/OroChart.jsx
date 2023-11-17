@@ -108,7 +108,7 @@ export default function OroChart() {
             visible: false,
           },
         },
-        height: 285,
+        height: window.innerWidth - window.innerHeight >= 330 ? window.innerHeight / 3 : 285,
       });
 
       let changeP =
@@ -159,7 +159,7 @@ export default function OroChart() {
             visible: false,
           },
         },
-        height: 285,
+        height: window.innerWidth - window.innerHeight >= 330 ? window.innerHeight / 3 : 285,
       });
 
       let changeS =
@@ -222,10 +222,7 @@ export default function OroChart() {
             } else {
               const date = new Date(param.time * 1000);
               const dateStr = `${date.getUTCDate()} ${date.toLocaleString(
-                "default",
-                {
-                  month: "short",
-                }
+                "default",{month: "short"}
               )}, ${date.getFullYear()}`;
               const data = param.seriesData.get(predictionSeriesP.current);
               const price = data.value !== undefined ? data.value : data.close;

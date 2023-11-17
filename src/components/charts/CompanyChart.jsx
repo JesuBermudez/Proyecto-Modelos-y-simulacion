@@ -98,7 +98,7 @@ export default function CompanyChart({ company, onClose }) {
             visible: false,
           },
         },
-        height: 285,
+        height: window.innerWidth - window.innerHeight >= 330 ? 260 : 285,
       });
 
       if (data.length > 1) {

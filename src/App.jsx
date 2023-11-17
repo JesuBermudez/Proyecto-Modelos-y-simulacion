@@ -39,8 +39,8 @@ export default function App() {
       <div style={{ width: "100%", display: "flex", gap: "25px" }}>
         <Card
           name={"Jesus Bermudez"}
-          image={"./src/assets/jesus.png"}
-          banner={`./src/assets/banner${array[0]}.webp`}
+          image={"src/assets/jesus.png"}
+          banner={`src/assets/banner${array[0]}.webp`}
           about={
             <>
               Ingenieria en sistemas <br /> front-end developer
@@ -51,8 +51,8 @@ export default function App() {
         />
         <Card
           name={"Jerson Tapias"}
-          image={"./src/assets/camilo.jpg"}
-          banner={`./src/assets/banner${array[1]}.webp`}
+          image={"src/assets/camilo.jpg"}
+          banner={`src/assets/banner${array[1]}.webp`}
           about={
             <>
               Ingenieria en sistemas <br /> back-end developer
@@ -63,8 +63,8 @@ export default function App() {
         />
         <Card
           name={"Kadir Quintero"}
-          image={"./src/assets/kadir.jpg"}
-          banner={`./src/assets/banner${array[2]}.webp`}
+          image={"src/assets/kadir.jpg"}
+          banner={`src/assets/banner${array[2]}.webp`}
           about={
             <>
               Ingenieria en sistemas <br /> front-end developer
