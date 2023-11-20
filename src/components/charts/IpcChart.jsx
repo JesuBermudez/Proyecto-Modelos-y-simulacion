@@ -55,10 +55,7 @@ export default function IpcChart() {
             let additionalData = {};
             apiData.forEach((item) => {
               let date = new Date(item.date);
-              let localDate = new Date(
-                date.getTime() - date.getTimezoneOffset() * 60000
-              );
-              additionalData[localDate.getTime() / 1000] = {
+              additionalData[date / 1000] = {
                 annual_current_inflation: item.annual_current_inflation,
                 annual_inflation: item.annual_inflation,
                 monthly_inflation: item.monthly_inflation,
