@@ -222,16 +222,17 @@ export default function CompanyChart({ company, onClose }) {
           });
 
           setLoading("Generar");
+          let lastDate = new Date(data[data.length - 1].time * 1000)
 
           predictionSeries.current.update(data[data.length - 1]);
           predictionSeries.current.update({
             time:
               new Date(
-                date.getFullYear(),
-                date.getMonth(),
-                date.getDate(),
-                response.data.time.split(":")[0],
-                response.data.time.split(":")[1]
+                lastDate.getFullYear(),
+                lastDate.getMonth(),
+                lastDate.getDate(),
+                parseInt(response.data.time.split(":")[0]),
+                parseInt(response.data.time.split(":")[1])
               ).getTime() / 1000,
             value: response.data.value,
           });
