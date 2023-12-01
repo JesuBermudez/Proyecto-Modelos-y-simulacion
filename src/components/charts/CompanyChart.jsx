@@ -51,6 +51,7 @@ export default function CompanyChart({ company, onClose }) {
 
         if (apiData != undefined) {
           const year = new Date(Date.now()).getFullYear();
+
           apiData.sort(
             (a, b) =>
               new Date(
@@ -58,6 +59,14 @@ export default function CompanyChart({ company, onClose }) {
               ) -
               new Date(`${b.data.hour.split("/").reverse().join("/")}/${year}`)
           );
+
+            let seen = new Set();
+            for (let i = 0; i < apiData.length; i++) {
+              if (seen.has(apiData[i].data.hour)) {
+                apiData.splice(i, 1);
+              }
+              seen.add(apiData[i].data.hour);
+            }
 
           let TransformedData = apiData.map((c) => {
             let date = new Date(
